@@ -40,7 +40,15 @@ public class JobQueue {
         redisTemplate.opsForHash().put("job:" + id, "status", status);
     }
 
-    public Optional<Job>
+    public Optional<Job> find(String id) {
+        Map<Object, Object> objectMap = redisTemplate.opsForHash().entries("job:" + id);
+
+        if (objectMap.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(new Job(id, (String) objectMap.get("payload"), (String) objectMap.get("status")));
+        }
+    }
 
 }
 
